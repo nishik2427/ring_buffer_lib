@@ -40,7 +40,7 @@
 #define RING_BUFFER_SIZE_TYPE uint8_t
 #endif
 #ifndef RING_BUFFER_MULTICORE_SUPPORT
-#define RING_BUFFER_MULTICORE_SUPPORT 0
+#define RING_BUFFER_MULTICORE_SUPPORT 1
 #endif
 #if RING_BUFFER_MULTICORE_SUPPORT
 #include "pico/critical_section.h"

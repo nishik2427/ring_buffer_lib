@@ -52,7 +52,7 @@ void ring_buffer_init(ring_buffer_t *ring_buf, uint8_t* buf, RING_BUFFER_SIZE_TY
 #endif
 }
 
-static RING_BUFFER_SIZE_TYPE ring_buffer_push_core(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
+static RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_push_core)(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
 {
     assert(ring_buf);
     assert(vals);
@@ -66,7 +66,7 @@ static RING_BUFFER_SIZE_TYPE ring_buffer_push_core(ring_buffer_t *ring_buf, uint
     return npushed;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_push_unsafe(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_push_unsafe)(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     spin_lock_unsafe_blocking(ring_buf->crit.spin_lock);
@@ -78,7 +78,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_push_unsafe(ring_buffer_t *ring_buf, uint8_t *
     return result;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_push(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_push)(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE nvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     critical_section_enter_blocking(&ring_buf->crit);
@@ -95,7 +95,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_push(ring_buffer_t *ring_buf, uint8_t *vals, R
 }
 
 // TODO: are these functions really necessary?
-RING_BUFFER_SIZE_TYPE ring_buffer_get_num_bytes_unsafe(ring_buffer_t *ring_buf)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_get_num_bytes_unsafe)(ring_buffer_t *ring_buf)
 {
     assert(ring_buf);
 #if RING_BUFFER_MULTICORE_SUPPORT
@@ -108,7 +108,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_get_num_bytes_unsafe(ring_buffer_t *ring_buf)
     return num_bytes;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_get_num_bytes(ring_buffer_t *ring_buf)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_get_num_bytes)(ring_buffer_t *ring_buf)
 {
     assert(ring_buf);
 #if RING_BUFFER_MULTICORE_SUPPORT
@@ -127,31 +127,31 @@ RING_BUFFER_SIZE_TYPE ring_buffer_get_num_bytes(ring_buffer_t *ring_buf)
     return num_bytes;
 }
 
-bool ring_buffer_is_full_unsafe(ring_buffer_t *ring_buf)
+bool __time_critical_func(ring_buffer_is_full_unsafe)(ring_buffer_t *ring_buf)
 {
     assert(ring_buf);
     return ring_buffer_get_num_bytes_unsafe(ring_buf) == ring_buf->bufsize;
 }
 
-bool ring_buffer_is_full(ring_buffer_t *ring_buf)
+bool __time_critical_func(ring_buffer_is_full)(ring_buffer_t *ring_buf)
 {
     assert(ring_buf);
     return ring_buffer_get_num_bytes(ring_buf) == ring_buf->bufsize;
 }
 
-bool ring_buffer_is_empty_unsafe(ring_buffer_t *ring_buf)
+bool __time_critical_func(ring_buffer_is_empty_unsafe)(ring_buffer_t *ring_buf)
 {
     RING_BUFFER_SIZE_TYPE result = ring_buffer_get_num_bytes_unsafe(ring_buf);
     return result == 0;
 }
 
-bool ring_buffer_is_empty(ring_buffer_t *ring_buf)
+bool __time_critical_func(ring_buffer_is_empty)(ring_buffer_t *ring_buf)
 {
     RING_BUFFER_SIZE_TYPE result = ring_buffer_get_num_bytes(ring_buf);
     return result == 0;
 }
 
-static RING_BUFFER_SIZE_TYPE ring_buffer_pop_core(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
+static RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_pop_core)(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
     assert(ring_buf);
     assert(vals);
@@ -164,7 +164,7 @@ static RING_BUFFER_SIZE_TYPE ring_buffer_pop_core(ring_buffer_t *ring_buf, uint8
     return npopped;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_pop_unsafe(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_pop_unsafe)(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     spin_lock_unsafe_blocking(ring_buf->crit.spin_lock);
@@ -176,7 +176,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_pop_unsafe(ring_buffer_t *ring_buf, uint8_t* v
     return result;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_pop(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE maxvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_pop)(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     critical_section_enter_blocking(&ring_buf->crit);
@@ -192,7 +192,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_pop(ring_buffer_t *ring_buf, uint8_t *vals, RI
     return result;
 }
 
-static RING_BUFFER_SIZE_TYPE ring_buffer_peek_core(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
+static RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_peek_core)(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
     assert(ring_buf);
     assert(vals);
@@ -205,7 +205,7 @@ static RING_BUFFER_SIZE_TYPE ring_buffer_peek_core(ring_buffer_t *ring_buf, uint
     return npopped;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_peek_unsafe(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_peek_unsafe)(ring_buffer_t *ring_buf, uint8_t* vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     spin_lock_unsafe_blocking(ring_buf->crit.spin_lock);
@@ -217,7 +217,7 @@ RING_BUFFER_SIZE_TYPE ring_buffer_peek_unsafe(ring_buffer_t *ring_buf, uint8_t* 
     return result;
 }
 
-RING_BUFFER_SIZE_TYPE ring_buffer_peek(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE maxvals)
+RING_BUFFER_SIZE_TYPE __time_critical_func(ring_buffer_peek)(ring_buffer_t *ring_buf, uint8_t *vals, RING_BUFFER_SIZE_TYPE maxvals)
 {
 #if RING_BUFFER_MULTICORE_SUPPORT
     critical_section_enter_blocking(&ring_buf->crit);

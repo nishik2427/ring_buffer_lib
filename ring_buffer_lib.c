@@ -32,7 +32,7 @@
 #include "ring_buffer_lib.h"
 
 #if RING_BUFFER_MULTICORE_SUPPORT
-void ring_buffer_init(ring_buffer_t *ring_buf, uint8_t* buf, RING_BUFFER_SIZE_TYPE buf_len, uint lock_num)
+void __time_critical_func(ring_buffer_init)(ring_buffer_t *ring_buf, uint8_t* buf, RING_BUFFER_SIZE_TYPE buf_len, uint lock_num)
 #else
 void ring_buffer_init(ring_buffer_t *ring_buf, uint8_t* buf, RING_BUFFER_SIZE_TYPE buf_len, uint32_t critical_section_data)
 #endif
